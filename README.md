@@ -1,2 +1,2 @@
 # prescreen-challenge
- a Sign &amp; Verify demo for the web，Android and iOS
+ a Sign and Verify demo for the web，Android and iOS
