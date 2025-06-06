@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    defaults:
+      run:
+        working-directory: ./prescreen-challenge
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run tests
+        run: npm test
+
+      - name: Build project
+        run: |
+          npm run build
+          npm run export  # 如果使用 Next.js/Expo 等需要导出
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "ais-zhao"
+          git config --global user.email "windstoneza@gmail.com"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # 建议使用默认的 GITHUB_TOKEN
+          publish_dir: ./out  # 根据实际构建目录调整
+          keep_files: true  # 保留历史文件
